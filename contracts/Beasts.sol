@@ -22,25 +22,25 @@ contract Beasts {
     }
 
     // Type of power and it's strength
-    struct power { 
+    struct Power { 
         string power;
         string pwDescription;
         uint pwStrength;
     }
 
     // keeping the track of all the available powers, 20 for now
-    mapping (uint => mapping(uint => power)) private powers;
+    mapping(uint => mapping(uint => Power)) private powers;
 
     // Beast definition
-    struct beast {
+    struct Beast {
         string name;
         Rarity beastType;
-        power[] powersOwned;
+        Power[] powersOwned;
         uint health;
     }
 
-    power[] public powersOwned;
-    beast[] public beasts;
+    Power[] public powersOwned;
+    Beast[] public beasts;
 
     /**
    * @dev createBeast responsible of creating a beast, calls a no. of internal functions.
@@ -96,12 +96,12 @@ contract Beasts {
         uint firstPair = 2;
         // extract powers of the beast
         uint pw1 = _getPowerNo(_randSq, firstPair);
-        power memory notRare = powers[1][pw1]; // powers[1] -> refers to all powers that belong to categoty non rare
+        Power memory notRare = powers[1][pw1]; // powers[1] -> refers to all powers that belong to categoty non rare
         powersOwned.push(notRare);
         // extract health of the beast
         uint health = _getHealth(_randSq);
         // create new beast
-        uint id = beasts.push(beast(
+        uint id = beasts.push(Beast(
             _name,
             _beastType,
             powersOwned,
