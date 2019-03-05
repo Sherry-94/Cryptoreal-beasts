@@ -38,6 +38,7 @@ contract Beasts {
         power[] powersOwned;
         uint health;
     }
+
     power[] public powersOwned;
     beast[] public beasts;
 
@@ -52,16 +53,7 @@ contract Beasts {
     }
 
     /**
-   * @dev _generateRandomSequence function to create a random sequence.
-   * @param _name from client side, create random sequence using name as param
-   */
-    function _generateRandomSequence(string memory _name) private view returns (uint) {
-        uint rand = uint(keccak256(abi.encodePacked(_name)));
-        return rand % powerModulus;
-    }
-    
-    /**
-   * @dev _resolveBeast evaluates the beast, upon its rarity and create accordingly
+   * @dev _resolveBeast evaluates the beast, upon its rarity and create accordingly, TODO
    * @param _randSq random sequence generated from _generateRandomSequence function
    * @param _beastType from client side, rarity of the beast wanted
    * @param _name from client side, name of the beast
@@ -69,19 +61,24 @@ contract Beasts {
     function _resolveBeast(uint _randSq, Rarity _beastType, string memory _name) private {
         if(_beastType == Rarity.notRare)
             _notRarePowers(_randSq, _beastType, _name);
-
         // else if(_beastType == Rarity.rare)
         //     _rarePowers(_randSq, _beastType);
-
         // else if(_beastType == Rarity.superRare)
         //     _superRarePowers(_randSq, _beastType);
-
         // else if(_beastType == Rarity.utlraSuperRare)
         //     _utlraSuperRarePowers(_randSq, _beastType);
-
         // else
-        //      _mythicalPowers(_randSq, _beastType);
+        //     _mythicalPowers(_randSq, _beastType);
     } 
+
+    /**
+   * @dev _generateRandomSequence function to create a random sequence.
+   * @param _name from client side, create random sequence using name as param
+   */
+    function _generateRandomSequence(string memory _name) private view returns (uint) {
+        uint rand = uint(keccak256(abi.encodePacked(_name)));
+        return rand % powerModulus;
+    }
 
     /**
    * @dev _notRarePowers generates the non rare beast
@@ -89,7 +86,13 @@ contract Beasts {
    * @param _beastType from client side, rarity of the beast wanted
    * @param _name from client side, name of the beast
    */
-    function _notRarePowers(uint _randSq, Rarity _beastType, string memory _name) private view returns (uint) {
+    function _notRarePowers(
+        uint _randSq,
+        Rarity _beastType,
+        string memory _name
+    ) 
+        private view returns (uint) 
+    {
         uint firstPair = 2;
         // extract powers of the beast
         uint pw1 = _getPowerNo(_randSq, firstPair);
@@ -98,7 +101,11 @@ contract Beasts {
         // extract health of the beast
         uint health = _getHealth(_randSq);
         // create new beast
-        uint id = beasts.push(beast(_name, _beastType, powersOwned, health)) - 1;  
+        uint id = beasts.push(beast(
+            _name,
+            _beastType,
+            powersOwned,
+            health)) - 1;  
         emit NewBeast(id, _name, _beastType, health);
     }
 
@@ -107,8 +114,7 @@ contract Beasts {
    * @param _randSq random sequence generated from _generateRandomSequence function
    * @param _Pair which pair of numbers to be extracted from the _randPower
    */
-    function _getPowerNo (uint _randSq, uint _Pair) private view returns (uint)
-    {
+    function _getPowerNo (uint _randSq, uint _Pair) private view returns (uint) {
         uint pw = _randSq / 10**(powerDigits-_Pair);
         return (pw / 10) + (pw % 10);        
     }
@@ -118,8 +124,7 @@ contract Beasts {
    * @param _randSq random sequence generated from _generateRandomSequence function
    * @param _Pair which pair of numbers to be extracted from the _randPower
    */
-    function _getHealth (uint _randSq) private view returns (uint)
-    {
+    function _getHealth (uint _randSq) private view returns (uint) {
         uint hl = _randSq / 10**(2);
         return (hl / 10) + (hl % 10);        
     }
